@@ -4,7 +4,7 @@ private String fileName;
 private String fileContents;
 
 /**
- sets up username, fileName, and type
+ constructor sets up username, fileName, and type
  */
 public FileClackData(String username, String fileName, int type){
     super(username, type);
