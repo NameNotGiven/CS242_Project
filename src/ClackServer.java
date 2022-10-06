@@ -24,5 +24,19 @@ public class ClackServer {
 
     }
 
+    public int getPort(){
+        return port;
+    }
 
+    public int hashCode(){
+
+    }
+
+    public boolean equals(){
+
+    }
+
+    public String toString(){
+
+    }
 }
