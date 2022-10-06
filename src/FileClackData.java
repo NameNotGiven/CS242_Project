@@ -1,4 +1,4 @@
-public class FileClackData extends ClackData {
+public abstract class FileClackData extends ClackData {
 
 private String fileName;
 private String fileContents;
@@ -23,9 +23,10 @@ public String getFileName(){
     return fileName;
 }
 
-public Data getData(){
-    return data;
-}
+// i am not totally sure how to go about the data object right now
+//public Data getData(){
+//    return data;
+//}
 
 public void readFileContents(){
 
@@ -36,14 +37,14 @@ public void writeFileContents(){
 }
 
 public int hashCode(){
-
+    return 0x123;
 }
 
 public boolean equals(){
-
+    return false;
 }
 
 public String toString(){
-
+    return "";
 }
 }

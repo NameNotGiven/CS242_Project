@@ -29,14 +29,14 @@ public class ClackServer {
     }
 
     public int hashCode(){
-
+        return 0x111;
     }
 
     public boolean equals(){
-
+    return false;
     }
 
     public String toString(){
-
+        return "";
     }
 }

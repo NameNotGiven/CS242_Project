@@ -1,5 +1,5 @@
-public class ClackData {
-    fard
+public abstract class ClackData {
+    //fard
     private String username;
     private int type;
     private Date date;
@@ -37,8 +37,7 @@ public Date getDate(){
 
     /**abstract method to return data
      */
-    public abstract getData(){
-
-}
+//    public abstract getData(){
+//}
 
 }
