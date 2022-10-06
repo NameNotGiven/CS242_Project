@@ -28,22 +28,33 @@ public ClackData(String userName, int type){
 public ClackData(int type){
     this("Anon", type);
 }
-
+/**
+ * default constructor, should call another*/
 public ClackData(){
     this(0);
 }
-    //accessor returns type
+/**
+ * accessor returns type
+ * */
 public int getType(){
     return type;
 }
-//accessor returns username
+/**
+ * accessor returns username
+ * */
 public String getUserName(){
     return username;
 }
-//accessor returns date
+/**
+ * accessor returns data
+ * */
 public Date getDate(){
     return date;
 }
+/**
+ * abstract method to return
+ * data contained in this class
+ * */
 public abstract String getData();
 
 }
