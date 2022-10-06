@@ -1,27 +1,24 @@
+import java.util.Date;
 public abstract class ClackData {
-    //fard
     private String username;
     private int type;
     private Date date;
-public class Date{
 
-}
+    static final int CONSTANT_LISTUSERS = 0;
+
 public ClackData(String userName, int type){
     this.username = userName;
     this.type = type;
-    this.date = date;
+    this.date = new Date();
 }
 
 public ClackData(int type){
-    this.username = "Anon";
+    this("Anon", type);
 }
 
 public ClackData(){
-
+    this(0);
 }
-
-
-
     //accessor returns type
 public int getType(){
     return type;
@@ -34,10 +31,6 @@ public String getUserName(){
 public Date getDate(){
     return date;
 }
-
-    /**abstract method to return data
-     */
-//    public abstract getData(){
-//}
+public abstract String getData();
 
 }
