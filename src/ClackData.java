@@ -1,4 +1,5 @@
 public class ClackData {
+    fard
     private String username;
     private int type;
     private Date date;
