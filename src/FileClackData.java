@@ -1,4 +1,4 @@
-public abstract class FileClackData extends ClackData {
+public class FileClackData extends ClackData {
 
 private String fileName;
 private String fileContents;
@@ -46,12 +46,12 @@ public int hashCode(){
 
 public boolean equals(Object other){
     FileClackData otherFile = (FileClackData)other;
-    return otherFile.getDate() == super.getDate() &&
+    return
     otherFile.getUserName() == super.getUserName() &&
     otherFile.getType() == super.getType() &&
     otherFile.fileName == this.fileName  &&
     otherFile.fileContents == this.fileContents;
-}
+} //not sure if it needs dates to be equal or not
 
 public String toString(){
     return "The date of the file is: " + super.getDate() + "\n" +

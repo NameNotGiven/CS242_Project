@@ -1,4 +1,4 @@
-public abstract class MessageClackData extends ClackData{
+public class MessageClackData extends ClackData{
     private String message;
 
     public MessageClackData(String userName, String message, int type){
@@ -18,11 +18,11 @@ public abstract class MessageClackData extends ClackData{
     }
     public boolean equals(Object other){
         MessageClackData otherFile = (MessageClackData)other;
-        return otherFile.getDate() == super.getDate() &&
+        return
                 otherFile.getUserName() == super.getUserName() &&
                 otherFile.getType() == super.getType() &&
                 otherFile.message == this.message;
-    }
+    } // not sure if it needs to test if the dates are equal, it doesn't work ever if it does
 
     public String toString(){
         return "The date of the message is: " + super.getDate() + "\n" +
