@@ -1,3 +1,6 @@
+/**
+ * class that holds filename and file content
+ * */
 public class FileClackData extends ClackData {
 
 private String fileName;
@@ -38,11 +41,11 @@ public String getFileName(){
 public String getData(){
     return fileContents;
 }
-
+/** writes file content, nothing for now */
 public void readFileContents(){
 
 }
-
+/** writes file content, nothing for now */
 public void writeFileContents(){
 
 }
