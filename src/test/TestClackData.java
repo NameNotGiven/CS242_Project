@@ -25,7 +25,7 @@ public class TestClackData {
         System.out.println("Name of file: " + fileOne.getFileName());
 
         // test getData
-        System.out.println("File contents: " + fileOne.getData());
+        System.out.println("File contents: " + fileOne.getData("GRUMP"));
 
         // test read/writefileContents (empty functions)
         fileOne.readFileContents();
@@ -62,7 +62,7 @@ public class TestClackData {
         // END SUPERCLASS TESTING
 
         // test getData
-        System.out.println(messageOne.getData());
+        System.out.println(messageOne.getData("GRUMP"));
 
         // test hashCode()
         System.out.println("hashCode: " + messageOne.hashCode());

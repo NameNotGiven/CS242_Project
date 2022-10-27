@@ -26,14 +26,20 @@ public class MessageClackData extends ClackData {
         super();
     }
 
-    // methods
+
+    MessageClackData( String userName, String message, String key, int type )
+    {
+        super(userName, type);
+
+        this.message = super.encrypt(message, key);
+    }
 
     /**
      * Returns the contents of message.
      */
-    public String getData()
+    public String getData(String key)
     {
-        return message;
+        return decrypt(message, key);
     }
 
     /**

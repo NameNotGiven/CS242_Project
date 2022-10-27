@@ -45,9 +45,9 @@ public class FileClackData extends data.ClackData {
     /**
      * Returns fileContents.
      */
-    public String getData()
+    public String getData(String key)
     {
-        return fileContents;
+        return decrypt(fileContents, key);
     }
 
     /**

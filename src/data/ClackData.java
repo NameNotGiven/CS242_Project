@@ -71,6 +71,59 @@ public abstract class ClackData {
     /**
      * Placeholder data, function overridden in MessageClackData and FileClackData.
      */
-    abstract String getData();
+
+    protected String encrypt(String inputStringToEncrypt, String key)
+    {
+        int x = inputStringToEncrypt.length();
+
+        for (int i = 0; ; i++)
+        {
+            if (x == i)
+                i = 0;
+            if (key.length() == inputStringToEncrypt.length())
+                break;
+            key+=(key.charAt(i));
+        }
+
+        String encoded_text="";
+        x = 0;
+        for (int i = 0; i < inputStringToEncrypt.length(); i++)
+        {
+            x = (inputStringToEncrypt.charAt(i) + key.charAt(i)) %52;
+            x += 'A';
+
+            encoded_text+=(char)(x);
+        }
+        return encoded_text;
+    }
+
+    protected String decrypt(String inputStringToDecrypt, String key)
+    {
+        int x = inputStringToDecrypt.length();
+
+        for (int i = 0; ; i++)
+        {
+            if (x == i)
+                i = 0;
+            if (key.length() == inputStringToDecrypt.length())
+                break;
+            key+=(key.charAt(i));
+        }
+
+        String original_text="";
+        x = 0;
+        for (int i = 0 ; i < inputStringToDecrypt.length() &&
+                i < key.length(); i++)
+        {
+            x = (inputStringToDecrypt.charAt(i) -
+                    key.charAt(i) + 26) %52;
+
+            x += 'A';
+            original_text+=(char)(x);
+        }
+        return original_text;
+    }
+
+    abstract String getData(String key);
 }
 
