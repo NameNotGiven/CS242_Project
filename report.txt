@@ -1,0 +1,5 @@
+CS242 Project Part 1 - Nikolai Melnikov and Amanda Polarolo
+
+Currently if a null or negative value are provided for user and port, the program just takes them and keeps working.
+This could be fixed by using a simple if else statement, if the value is below 0 or is null, then it returns an error,
+like we have learned in class, maybe asking the user for a proper input or just ending the program.
