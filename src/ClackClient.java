@@ -22,10 +22,22 @@ public class ClackClient {
  * dataToReceiveFromServer to null
  * */
     public ClackClient(String userName, String hostName, int port){
-    this.userName = userName;
-    this.hostName = hostName;
-    this.port = port;
-    this.closeConnection = false;
+        if (userName == null) {
+            throw new IllegalArgumentException();
+        }else {
+        this.userName = userName;
+    }
+        if(hostName == null){
+            throw new IllegalArgumentException();
+        } else {
+        this.hostName = hostName;
+    }
+        if (port < 1024) {
+            throw new IllegalArgumentException();
+        }else {
+        this.port = port;
+    }
+        this.closeConnection = false;
     }
     /**
      * Constructor to set up port to default number 7000
