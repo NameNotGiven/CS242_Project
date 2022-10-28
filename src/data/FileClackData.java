@@ -3,6 +3,8 @@
 
 package data;
 
+import java.io.IOException;
+
 public class FileClackData extends data.ClackData {
     
     private String fileName;
@@ -55,7 +57,25 @@ public class FileClackData extends data.ClackData {
      */
     public void readFileContents()
     {
-        // no code at this time, just declaration
+        try{
+            boolean doneReading = false;
+            while(!doneReading){
+
+            }
+
+        } catch(IOException ioe){
+            System.err.println("Error reading contents");
+        }
+
+    }
+    public void readFileContents(String key)
+    {
+        try{
+
+        } catch(IOException ioe){
+            System.err.println("Error reading key");
+        }
+
     }
 
     /**
@@ -63,7 +83,17 @@ public class FileClackData extends data.ClackData {
      */
     public void writeFileContents()
     {
-        // no code at this time, just declaration
+        try{
+
+        } catch()
+
+    }
+    public void writeFileContents(String key)
+    {
+        try{
+
+        } catch()
+
     }
 
     /**

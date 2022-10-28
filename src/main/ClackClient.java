@@ -1,6 +1,6 @@
 // Client
 package main;
-
+import java.util.Scanner;
 public class ClackClient {
     static final int DEFAULT_PORT = 7000;
     private String userName;
@@ -10,6 +10,8 @@ public class ClackClient {
     private boolean closeConnection;
     private data.ClackData dataToSendToServer;
     private data.ClackData dataToReceiveFromServer;
+
+    Scanner inFromStd;
 
     /**
      * Constructor for a name, host and port.
@@ -62,6 +64,10 @@ public class ClackClient {
      */
     public void start()
     {
+        inFromStd = new Scanner(readClientData());
+        readClientData();
+        printData(data);
+        dataToReceiveFromServer = dataToSendToServer;
 
     }
 
@@ -70,7 +76,17 @@ public class ClackClient {
      */
     public void readClientData()
     {
+        inFromStd = new Scanner(System.in);
+        String input = inFromStd.nextLine();
+    if(input == "DONE"){
+        closeConnection = true;
+    } else if(input == "SENDFILE <filename>"){
+        dataToSendToServer = new FileClackData(CONSTANT_SENDFILE);
+    } else if(input == "LISTUSERS"){
 
+    } else{
+        dataToSendToServer = new MessageClackData(CONSTANT_SENDMESSSAGE);
+        }
     }
 
     /**
@@ -94,7 +110,7 @@ public class ClackClient {
      */
     public void printData()
     {
-
+        System.out.println(dataToReceiveFromServer);
     };
 
     /**
