@@ -1,5 +1,11 @@
+
 // Client
 package main;
+
+import data.FileClackData;
+import data.MessageClackData;
+
+import java.util.Objects;
 import java.util.Scanner;
 public class ClackClient {
     static final int DEFAULT_PORT = 7000;
@@ -17,24 +23,14 @@ public class ClackClient {
      * Constructor for a name, host and port.
      */
     public ClackClient(String userName, String hostName, int port){
-        if(userName == null){
-            throw new IllegalArgumentException();
-        } else {
-            this.userName = userName;
-        }
-        if(hostName == null){
-            throw new IllegalArgumentException();
-        } else {
-            this.hostName = hostName;
-        }
-        if(port < 1024){
-            throw new IllegalArgumentException();
-        } else {
-            this.port = port;
-        }
-        this.closeConnection = false;
-    }
+        if (userName == null || hostName == null || port <1024) {throw new IllegalArgumentException("Invalid Client Parameters");}
 
+        this.userName = userName;
+        this.hostName = hostName;
+        this.port = port;
+        this.dataToReceiveFromServer = null;
+        this.dataToSendToServer = null;
+    }
     /**
      * Constructor for a given name and host, using DEFAULT_PORT.
      */
@@ -62,56 +58,58 @@ public class ClackClient {
     /**
      * Undefined.
      */
-    public void start()
-    {
-        Scanner inFromStd = new Scanner(readClientData());
-        readClientData();
-        printData(data);
-        dataToReceiveFromServer = dataToSendToServer;
+    public void start(){
 
-    }
-
-    /**
-     * Undefined.
-     */
-    public void readClientData()
-    {
-        inFromStd = new Scanner(System.in);
-        String input = inFromStd.nextLine();
-    if(input == "DONE"){
-        closeConnection = true;
-    } else if(input == "SENDFILE <filename>"){
-        dataToSendToServer = new FileClackData(CONSTANT_SENDFILE);
-    } else if(input == "LISTUSERS"){
-
-    } else{
-        dataToSendToServer = new MessageClackData(CONSTANT_SENDMESSSAGE);
+        closeConnection = false;
+        while (!closeConnection) {
+            readClientData();
+            dataToReceiveFromServer = dataToSendToServer;
+            printData();
         }
     }
 
     /**
-     * Undefined.
+     * Undefined for now
      */
-    public void sendData()
-    {
+    public void readClientData(){
+        System.out.println("Enter your command/message\n");
+        String input = inFromStd.nextLine();
+        String[] split = input.split(" ", 3);
+        if (split[0].equals("DONE")) {closeConnection = true;}
+        else if (split[0].equals("SENDFILE")) {
+            dataToSendToServer = new FileClackData(userName, split[1], 3);
+            java.io.File f = new java.io.File(split[1]);
+            if (!f.canRead()) {
+                System.err.println("Couldn't open File\n");
+                dataToSendToServer = null;
+            }
 
+        }
+        else if (input.equals("LISTUSERS")) {} //Do nothing - DO NOT CALL
+        else {
+            dataToSendToServer = new MessageClackData(userName, input, 2);
+        }
+        dataToReceiveFromServer = dataToSendToServer;
     }
 
     /**
-     * Undefined.
+     * Undefined for now
      */
-    public void receiveData()
-    {
-
-    }
+    public void sendData(){}
 
     /**
-     * Undefined.
+     * Undefined for now
      */
-    public void printData()
-    {
-        System.out.println(dataToReceiveFromServer);
-    };
+    public void receiveData(){}
+
+    /**
+     * Undefined for now
+     */
+    public void printData(){
+        if (dataToReceiveFromServer != null) {System.out.println(dataToReceiveFromServer.toString());}
+        else {System.err.println("No data to retrieve\n");}
+    }
+
 
     /**
      * Returns username.
@@ -170,3 +168,5 @@ public class ClackClient {
     }
 
 }
+
+
