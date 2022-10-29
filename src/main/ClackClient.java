@@ -64,7 +64,7 @@ public class ClackClient {
      */
     public void start()
     {
-        inFromStd = new Scanner(readClientData());
+        Scanner inFromStd = new Scanner(readClientData());
         readClientData();
         printData(data);
         dataToReceiveFromServer = dataToSendToServer;

@@ -3,7 +3,11 @@
 
 package data;
 
+import java.util.Scanner;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
 public class FileClackData extends data.ClackData {
     
@@ -57,24 +61,38 @@ public class FileClackData extends data.ClackData {
      */
     public void readFileContents()
     {
-        try{
-            boolean doneReading = false;
-            while(!doneReading){
-
+        try {
+            File myObj = new File(fileName);
+            Scanner file = new Scanner(myObj);
+            while (file.hasNextLine()) {
+                fileContents += file.nextLine();
             }
-
-        } catch(IOException ioe){
-            System.err.println("Error reading contents");
+            file.close();
+        } catch (FileNotFoundException fnfe) {
+            System.err.println( "File does not exist." );
+        } catch (IOException ioe) {
+            System.err.println( "IO exception occurred." );
         }
+
 
     }
     public void readFileContents(String key)
     {
-        try{
 
-        } catch(IOException ioe){
-            System.err.println("Error reading key");
+        try {
+            File myObj = new File(fileName);
+            Scanner file = new Scanner(myObj);
+            while (file.hasNextLine()) {
+                fileContents += file.nextLine();
+            }
+            file.close();
+        } catch (FileNotFoundException fnfe) {
+            System.err.println( "File does not exist." );
+        } catch (IOException ioe) {
+            System.err.println( "IO exception occurred." );
         }
+        encrypt(fileContents, key);
+
 
     }
 
@@ -83,16 +101,27 @@ public class FileClackData extends data.ClackData {
      */
     public void writeFileContents()
     {
-        try{
-
-        } catch()
+        try {
+            FileWriter file = new FileWriter(fileName);
+            file.write(fileContents);
+            file.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
     }
     public void writeFileContents(String key)
     {
-        try{
-
-        } catch()
+        decrypt(fileContents,key);
+        try {
+            FileWriter file = new FileWriter(fileName);
+            file.write(fileContents);
+            file.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
     }
 
