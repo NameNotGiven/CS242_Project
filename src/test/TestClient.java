@@ -2,9 +2,14 @@ package test;
 
 import main.ClackClient;
 
+/**
+ * You don't have to have a Javadoc for a test class.
+ * You should test all implemented functions in the data classes,
+ * whether they are in the superclass or in the subclasses.
+ */
 public class TestClient {
-    public static void main(String[] args) { //Using example to fix old issues
-        // All four constructors of ClackClient
+    public static void main(String[] args) {
+        // Tests all four different constructors of ClackClient.
         ClackClient clackClient1 = new ClackClient("testUser1", "hostName1", 12345);
         ClackClient clackClient2 = new ClackClient("testUser2", "hostName2", 7000);
         ClackClient clackClient3 = new ClackClient("testUser3", "localhost", 7000);
@@ -15,12 +20,76 @@ public class TestClient {
         ClackClient clackClient8 = new ClackClient("testUser3");
         ClackClient clackClient9 = new ClackClient("Anon");
         ClackClient clackClient10 = new ClackClient();
+
+        // Tests IllegalArgumentException thrown as expected from the constructors of ClackClient
+        // when the username is null.
         try {
-            ClackClient clackClient11 = new ClackClient(null);
-        } catch (Exception IllegalArgumentException) {
-            System.out.println("Expected error occurred");
+            new ClackClient(null, "hostName", 12345);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName, int port) " +
+                    "when the username is null.");
         }
-        // getUserName()
+        try {
+            new ClackClient(null, "hostName");
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName) " +
+                    "when the username is null.");
+        }
+        try {
+            new ClackClient(null);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName) " +
+                    "when the username is null.");
+        }
+        System.out.println();
+
+        // Tests IllegalArgumentException thrown as expected from the constructors of ClackClient
+        // when the host name is null.
+        try {
+            new ClackClient("Anon", null, 12345);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName, int port) " +
+                    "when the host name is null.");
+        }
+        try {
+            new ClackClient("Anon", null);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName) " +
+                    "when the host name is null.");
+        }
+        System.out.println();
+
+        // Tests IllegalArgumentException thrown as expected from the constructors of ClackClient
+        // when the port is a number lesser than 1024.
+        try {
+            new ClackClient("Anon", "localhost", -1);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName, int port) " +
+                    "when the port is a negative number.");
+        }
+        try {
+            new ClackClient("Anon", "localhost", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName, int port) " +
+                    "when the port is zero.");
+        }
+        try {
+            new ClackClient("Anon", "localhost", 1023);
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown as expected from " +
+                    "ClackClient(String userName, String hostName, int port) " +
+                    "when the port is a positive number lesser than 1024.");
+        }
+        System.out.println();
+
+        // Tests String getUserName().
         System.out.println("clackClient1 getUserName(): " + clackClient1.getUserName());
         System.out.println("clackClient2 getUserName(): " + clackClient2.getUserName());
         System.out.println("clackClient3 getUserName(): " + clackClient3.getUserName());
@@ -33,7 +102,7 @@ public class TestClient {
         System.out.println("clackClient10 getUserName(): " + clackClient10.getUserName());
         System.out.println();
 
-        // getHostName()
+        // Tests String getHostName().
         System.out.println("clackClient1 getHostName(): " + clackClient1.getHostName());
         System.out.println("clackClient2 getHostName(): " + clackClient2.getHostName());
         System.out.println("clackClient3 getHostName(): " + clackClient3.getHostName());
@@ -46,7 +115,7 @@ public class TestClient {
         System.out.println("clackClient10 getHostName(): " + clackClient10.getHostName());
         System.out.println();
 
-        // getPort()
+        // Tests int getPort().
         System.out.println("clackClient1 getPort(): " + clackClient1.getPort());
         System.out.println("clackClient2 getPort(): " + clackClient2.getPort());
         System.out.println("clackClient3 getPort(): " + clackClient3.getPort());
@@ -59,7 +128,7 @@ public class TestClient {
         System.out.println("clackClient10 getPort(): " + clackClient10.getPort());
         System.out.println();
 
-        // hashCode()
+        // Tests int hashCode().
         System.out.println("clackClient1 hashCode(): " + clackClient1.hashCode());
         System.out.println("clackClient2 hashCode(): " + clackClient2.hashCode());
         System.out.println("clackClient3 hashCode(): " + clackClient3.hashCode());
@@ -72,7 +141,7 @@ public class TestClient {
         System.out.println("clackClient10 hashCode(): " + clackClient10.hashCode());
         System.out.println();
 
-        // equals()
+        // Tests boolean equals(Object other).
         System.out.println("clackServer1 equals null: " + clackClient1.equals(null));
         System.out.println("clackServer1 equals clackServer1: " + clackClient1.equals(clackClient1));
         System.out.println("clackServer1 equals clackServer2: " + clackClient1.equals(clackClient2));
@@ -99,35 +168,27 @@ public class TestClient {
         System.out.println("clackServer10 equals clackServer9: " + clackClient10.equals(clackClient9));
         System.out.println();
 
-        // toString()
-        System.out.println("clackClient1:\n" + clackClient1);
-        System.out.println("clackClient2:\n" + clackClient2);
-        System.out.println("clackClient3:\n" + clackClient3);
-        System.out.println("clackClient4:\n" + clackClient4);
-        System.out.println("clackClient5:\n" + clackClient5);
-        System.out.println("clackClient6:\n" + clackClient6);
-        System.out.println("clackClient7:\n" + clackClient7);
-        System.out.println("clackClient8:\n" + clackClient8);
-        System.out.println("clackClient9:\n" + clackClient9);
-        System.out.println("clackClient10:\n" + clackClient10);
-        System.out.println("clackClient11:\n" + clackClient10);
+        // Tests String toString().
+        System.out.println("clackClient1 toString():\n" + clackClient1);
+        System.out.println("clackClient2 toString():\n" + clackClient2);
+        System.out.println("clackClient3 toString():\n" + clackClient3);
+        System.out.println("clackClient4 toString():\n" + clackClient4);
+        System.out.println("clackClient5 toString():\n" + clackClient5);
+        System.out.println("clackClient6 toString():\n" + clackClient6);
+        System.out.println("clackClient7 toString():\n" + clackClient7);
+        System.out.println("clackClient8 toString():\n" + clackClient8);
+        System.out.println("clackClient9 toString():\n" + clackClient9);
+        System.out.println("clackClient10 toString():\n" + clackClient10);
+        System.out.println();
 
-        //readClientData
-        clackClient1.readClientData();
-
-        //printData
-        System.out.println("clackClient1\n");
-        clackClient1.printData();
-        System.out.println("clackClient10\n");
-        clackClient10.printData();
-
-        //start
+        // Tests void start().
+        // Manually testing in the command line.
+        // If you want to test running start() multiple times here,
+        // you may have to comment out this.inFromStd.close() in start().
+        System.out.println("Command-line interaction tests:");
         clackClient1.start();
+
+        // Do not need to explicitly test readClientData() and printData()
+        // since they are just the helper methods for start().
     }
-
-    /**
-     * Runs assorted tests on the client then allows for manual testing with start
-     */
-
-
 }
