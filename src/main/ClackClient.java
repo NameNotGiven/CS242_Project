@@ -4,7 +4,9 @@ import data.ClackData;
 import data.FileClackData;
 import data.MessageClackData;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -19,6 +21,9 @@ import java.util.Scanner;
 public class ClackClient {
     private static final int DEFAULT_PORT = 7000;  // The default port number
     private static final String DEFAULT_KEY = "TIME";  // The default key for encryption and decryption
+    private static final boolean DEFAULT_CLOSE_CONNECTION = false;
+    private static final ClackData DEFAULT_DATA_TO_SEND_TO_SERVER = null;
+    private static final ClackData DEFAULT_DATA_RECEIVED_FROM_SERVER = null;
     private String userName;  // A string representing the name of the client
     private String hostName;  // A string representing the name of the computer representing the server
     private int port;  // An integer representing the port number on the server connected to
@@ -26,6 +31,17 @@ public class ClackClient {
     private ClackData dataToSendToServer;  // A ClackData object representing the data sent to the server
     private ClackData dataToReceiveFromServer;  // A ClackData object representing the data received from the server
     private Scanner inFromStd;  // A Scanner object representing the standard input
+
+    private ObjectOutputStream outToServer;
+
+    private ObjectInputStream inFromServer;
+
+    private static final ObjectInputStream DEFAULT_IN_FROM_SERVER = null;
+
+    private static final ObjectOutputStream DEFAULT_OUT_FROM_SERVER = null;
+
+
+    private Socket skt;
 
     /**
      * The constructor to set up the username, host name, and port.
@@ -50,9 +66,11 @@ public class ClackClient {
         this.userName = userName;
         this.hostName = hostName;
         this.port = port;
-        this.closeConnection = false;
-        this.dataToSendToServer = null;
-        this.dataToReceiveFromServer = null;
+        this.closeConnection = DEFAULT_CLOSE_CONNECTION;
+        this.dataToSendToServer = DEFAULT_DATA_TO_SEND_TO_SERVER;
+        this.dataToReceiveFromServer = DEFAULT_DATA_RECEIVED_FROM_SERVER;
+        this.inFromServer = DEFAULT_IN_FROM_SERVER;
+        this.outToServer = DEFAULT_OUT_FROM_SERVER;
     }
 
     /**
@@ -98,15 +116,29 @@ public class ClackClient {
      * 3. Closes this.inFromStd.
      */
     public void start() {
-        this.inFromStd = new Scanner(System.in);
+        try {
+            skt = new Socket(this.hostName, this.port);
+            this.outToServer = new ObjectOutputStream ( skt.getOutputStream() );
+            this.inFromServer = new ObjectInputStream ( skt.getInputStream() );
 
-        while (!this.closeConnection) {
-            readClientData();
-            this.dataToReceiveFromServer = this.dataToSendToServer;  // echoing
-            printData();
+        } catch ( UnknownHostException uhe ) {
+            System.err.println("UnknownHostException: " + uhe.getMessage());
+        } catch ( IOException ioe ) {
+            System.err.println("IOException: " + ioe.getMessage());
+        } catch ( IllegalArgumentException iae ) {
+            System.err.println("IllegalArgumentException: " + iae.getMessage());
         }
+    }
 
-        this.inFromStd.close();
+    public void close() {
+        inFromStd.close();
+        try {
+            outToServer.close();
+            inFromServer.close();
+            skt.close();
+        } catch (IOException ioe) {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
     }
 
     /**
@@ -151,20 +183,32 @@ public class ClackClient {
         }
     }
 
-    /**
-     * Sends data to server.
-     * Does not return anything.
-     * For now, it should have no code, just a declaration.
-     */
-    public void sendData() {
+    public void sendData(ClackData dataToSend) {
+        try {
+            outToServer.writeObject(dataToSend);
+        } catch ( InvalidClassException ice ) {
+            System.err.println("InvalidClassException: " + ice.getMessage());
+        } catch ( NotSerializableException nse) {
+            System.err.println("NotSerializableException: " + nse.getMessage());
+        } catch ( IOException ioe ) {
+            System.err.println ("IOException in sendData: " + ioe.getMessage());
+        }
     }
 
     /**
      * Receives data from the server.
-     * Does not return anything.
-     * For now, it should have no code, just a declaration.
      */
-    public void receiveData() {
+    public ClackData receiveData() {
+        try {
+            dataToReceiveFromServer = (ClackData) inFromServer.readObject();
+        } catch ( ClassCastException cce ) {
+            System.err.println("ClassCastException: " + cce.getMessage());
+        } catch ( ClassNotFoundException cnfe ) {
+            System.err.println("ClassNotFoundException: " + cnfe.getMessage());
+        } catch ( IOException ioe ) {
+            System.err.println("IOException in receiveData: " + ioe.getMessage());
+        }
+        return dataToReceiveFromServer;
     }
 
     /**
