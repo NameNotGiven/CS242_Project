@@ -2,6 +2,9 @@ package main;
 
 import data.ClackData;
 
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Objects;
 
 /**
@@ -15,12 +18,31 @@ import java.util.Objects;
  * @author nikolaimelnikov/amandapolarolo
  */
 public class ClackServer {
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            ClackServer cs = new ClackServer();
+            cs.start();
+        }
+        else if (args.length == 1) {
+            try {
+                int port = Integer.parseInt(args[0]);
+                ClackServer cs = new ClackServer(port);
+                cs.start();
+
+            } catch (NumberFormatException nfe) {
+                System.err.println("Argument is not an int: " + nfe.getMessage());
+            }
+        }
+        else System.err.println("Too many arguments!");
+    }
     private static final int DEFAULT_PORT = 7000;  // The default port number
+    private static final boolean DEFAULT_CLOSE_CONNECTION = false;
     private int port;  // An integer representing the port number on the server connected to
     private boolean closeConnection;  // A boolean representing whether the connection is closed or not
     private ClackData dataToReceiveFromClient;  // A ClackData object representing the data received from the client
     private ClackData dataToSendToClient;  // A ClackData object representing the data sent to client
-
+    private static final ObjectInputStream inFromClient = null;
+    private static final ObjectOutputStream outFromClient = null;
     /**
      * The constructor that sets the port number.
      * Should set dataToReceiveFromClient and dataToSendToClient as null.
@@ -28,10 +50,12 @@ public class ClackServer {
      * @param port an int representing the port number on the server connected to
      */
     public ClackServer(int port) {
+        if (port < 1024) {
+            throw new IllegalArgumentException("Error: Port number is less than 1024!");
+        }
+
         this.port = port;
-        this.closeConnection = false;
-        this.dataToReceiveFromClient = null;
-        this.dataToSendToClient = null;
+        this.closeConnection = DEFAULT_CLOSE_CONNECTION;
     }
 
     /**
@@ -49,22 +73,46 @@ public class ClackServer {
      * For now, it should have no code, just a declaration.
      */
     public void start() {
+        try {
+            ServerSocket sskt = new ServerSocket(getPort());
+            System.out.println("Server started on port " + getPort());
+
+            while (!closeConnection) {
+                Socket clientSocket = sskt.accept();
+            }
+
+            sskt.close();
+        } catch (IOException ioe) {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
+    }
+
+    public void sendData(ClackData dataToSend) {
+        try {
+            outFromClient.writeObject(dataToSend);
+        } catch ( InvalidClassException ice ) {
+            System.err.println("InvalidClassException: " + ice.getMessage());
+        } catch ( NotSerializableException nse) {
+            System.err.println("NotSerializableException: " + nse.getMessage());
+        } catch ( IOException ioe ) {
+            System.err.println ("IOException in sendData: " + ioe.getMessage());
+        }
     }
 
     /**
-     * Receives data from client.
-     * Does not return anything.
-     * For now, it should have no code, just a declaration.
+     * Receives data from the server.
      */
-    public void receiveData() {
-    }
-
-    /**
-     * Sends data to client.
-     * Does not return anything.
-     * For now, it should have no code, just a declaration.
-     */
-    public void sendData() {
+    public ClackData receiveData() {
+        try {
+            dataToReceiveFromClient = (ClackData) inFromClient.readObject();
+        } catch ( ClassCastException cce ) {
+            System.err.println("ClassCastException: " + cce.getMessage());
+        } catch ( ClassNotFoundException cnfe ) {
+            System.err.println("ClassNotFoundException: " + cnfe.getMessage());
+        } catch ( IOException ioe ) {
+            System.err.println("IOException in receiveData: " + ioe.getMessage());
+        }
+        return dataToReceiveFromClient;
     }
 
     /**

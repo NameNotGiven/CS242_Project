@@ -19,6 +19,31 @@ import java.util.Scanner;
  * @author nikolaimelnikov/amandapolarolo
  */
 public class ClackClient {
+
+    public static void main ( String[] args ) {
+        ClackClient clackClient;
+        if ( args.length == 0 ) {
+            clackClient = new ClackClient();
+        } else {
+            Scanner scanner = new Scanner(args[0]);
+            scanner.useDelimiter("@");
+            String userName = scanner.next();
+            if (!scanner.hasNext()) {
+                clackClient = new ClackClient(userName);
+            } else {
+                scanner.useDelimiter("[@:]");
+                String hostName = scanner.next();
+                if (!scanner.hasNext()) {
+                    clackClient = new ClackClient(userName, hostName);
+                } else {
+                    int port = scanner.nextInt();
+                    clackClient = new ClackClient(userName, hostName, port);
+                }
+            }
+            scanner.close();
+        }
+        clackClient.start();
+    }
     private static final int DEFAULT_PORT = 7000;  // The default port number
     private static final String DEFAULT_KEY = "TIME";  // The default key for encryption and decryption
     private static final boolean DEFAULT_CLOSE_CONNECTION = false;
