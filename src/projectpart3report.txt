@@ -1,5 +1,0 @@
-https://github.com/NameNotGiven/CS242_Project
-
-We successfully implemented most parts of the project, but were not able to test it because my computer does not have windows 10 pro.
-I am not sure how many points off this will be, but everything else seems to function properly, and ClackServer does start up, we are just unable to
-connect ClackClient.

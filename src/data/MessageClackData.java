@@ -1,111 +1,122 @@
 package data;
 
-import java.util.Objects;
+import java.io.Serializable;
 
 /**
- * The child of ClackData, whose data is a message.
+ * The class creates a MessageClackData that is a subclass of ClackData. Additionally, MessageClackData has a message
+ * that is represented by a string.
  *
- * @author nikolaimelnikov/amandapolarolo
+ * @author Nikolai Melnikov
  */
-public class MessageClackData extends ClackData {
-    private String message;  // A string representing instant message
+public class MessageClackData extends ClackData
+{
+
+    private final String message;
+
+    private static final String DEFAULT_MESSAGE = "Hello!";
 
     /**
-     * The constructor to set up the instance variables username, message, and type.
-     * Should call the super constructor.
+     * MessageClackData constructor that initializes the userName, message, and type with user provided data.
      *
-     * @param userName a string representing the name of the client user
-     * @param message  a string representing instant message
-     * @param type     an int representing the data type
+     * @param userName          userName of the sender of the MessageClackData, inherited from ClackData
+     * @param message           string of a message in MessageClackData
+     * @param type              dictates the type of MessageClackData, inherited from ClackData
      */
-    public MessageClackData(String userName, String message, int type) {
+    public MessageClackData(String userName, String message, int type)
+    {
         super(userName, type);
         this.message = message;
     }
 
     /**
-     * The constructor to set up the instance variables username, message, and type.
-     * The message is immediately encrypted using the given key.
-     * Should call the super constructor.
-     *
-     * @param userName a string representing the name of the client user
-     * @param message  a string representing instant message
-     * @param key      a string used as the key to encrypt the message
-     * @param type     an int representing the data type
+     * MessageClackData default constructor that initializes the userName to "anon", message to "Hello!", and type to 2
      */
-    public MessageClackData(String userName, String message, String key, int type) {
+    public MessageClackData() { this(ANONYMOUS_USER, DEFAULT_MESSAGE, CONSTANT_SENDMESSAGE); }
+
+    /**
+     * MessageClackData constructor that initializes the userName, message, key, and type with user provided data.
+     * The message is encrypted using "key" as the encryption key
+     * @param userName          userName of the sender of the MessageClackData, inherited from ClackData
+     * @param message           string of a message in MessageClackData
+     * @param key               string of the key used to form the encryption, combination of letters.
+     * @param type              dictates the type of MessageClackData, inherited from ClackData
+     */
+    public MessageClackData(String userName, String message, String key, int type)
+    {
         super(userName, type);
         this.message = encrypt(message, key);
     }
 
     /**
-     * The default constructor.
-     * This constructor should call another constructor.
+     * Creates a unique hashcode for a MessageClackData
+     *
+     * @return          an integer hashCode
      */
-    public MessageClackData() {
-        // It is okay to do either this:
-        super(ClackData.CONSTANT_SENDMESSAGE);
-        this.message = "";
-
-        // Or this:
-        // this("Anon", "", ClackData.CONSTANT_SENDMESSAGE);
-    }
-
     @Override
-    public String getData() {
-        return this.message;
-    }
+    public int hashCode()
+    {
+        int result = 17;
+        int prime = 37;
 
-    @Override
-    public String getData(String key) {
-        return decrypt(this.message, key);
-    }
-
-    @Override
-    public int hashCode() {
-        // The following is a traditional standard way to generate the hash code.
-        // This is only one of many possible implementations. See the hashCode()
-        // method in other classes for some different implementations.
-
-        int result = 29;
-
-        // It is okay to select only some of the instance variables to calculate the hash code
-        // but must use the same instance variables with equals() to maintain consistency.
-        result = 37 * result + ((this.userName == null) ? 0 : this.userName.hashCode());
-        result = 37 * result + this.type;
-        result = 37 * result + ((this.message == null) ? 0 : this.message.hashCode());
+        result = prime * result + getType();
+        result = prime * result + getDate().hashCode();
+        result = prime * result + getUserName().hashCode();
+        result = prime * result + this.message.hashCode();
 
         return result;
     }
 
+    /**
+     * Checks if two MessageCLackData objects are equal to each other or not. Equal in this circumstance means
+     * equivalent type, userName, date, and message.
+     *
+     * @param obj           dictates the second MessageCLackData object that the first MessageClackData is comparing to
+     * @return              a boolean that determines if the MessageClackData's are equal or not
+     */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof MessageClackData)) {
-            return false;
-        }
+    public boolean equals(Object obj)
+    {
+        if (obj == null) return false;
+        if (!(obj instanceof MessageClackData)) return false;
 
-        // Casts other to be a MessageClackData to access its instance variables.
-        MessageClackData otherMessageClackData = (MessageClackData) other;
+        MessageClackData mcd = (MessageClackData)obj;
 
-        // Compares the selected instance variables of both MessageClackData objects that determine uniqueness.
-        // It is okay to select only some of the instance variables for comparison but must use the same
-        // instance variables with hashCode() to maintain consistency.
-        return this.userName.equals(otherMessageClackData.userName)
-                && this.type == otherMessageClackData.type
-                && Objects.equals(this.message, otherMessageClackData.message);
+        return this.getType() == mcd.getType() &&
+                this.getUserName().equals(mcd.getUserName()) &&
+                this.getDate().equals(mcd.getDate()) &&
+                this.message.equals(mcd.message);
+
     }
 
+    /**
+     * Turns all data inside MessageClackData into a string output. The data includes: a type, userName, date, message,
+     * and a hashCode.
+     *
+     * @return          string of all data inside FileClackData into a readable format
+     */
     @Override
-    public String toString() {
-        // Should return a full description of the class with all instance variables,
-        // including those in the super class.
-        return "This instance of MessageClackData has the following properties:\n"
-                + "Username: " + this.userName + "\n"
-                + "Type: " + this.type + "\n"
-                + "Date: " + this.date.toString() + "\n"
-                + "Message: " + this.message + "\n";
+    public String toString()
+    {
+        return "This is MessageClackData that is type, " + getType() + ", from user, " + getUserName() +
+                ", at, " + getDate() + ", stating, " + this.message + ", the hash code is " + hashCode();
+    }
+
+    /**
+     * This is an accessor for MessageClackData's "Data".
+     *
+     * @return          a string of MessageClackData's message
+     */
+    public String getData() {
+        return this.message;
+    }
+
+    /**
+     * This is an overridden accessor for MessageClackData's "Data".
+     *
+     * @param key           string of the key used to form the decryption, combination of letters.
+     * @return              a string of MessageClackData's decrypted message
+     */
+    public String getData(String key) {
+        return decrypt(this.message, key);
     }
 }

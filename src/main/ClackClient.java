@@ -1,41 +1,44 @@
 package main;
 
-import data.ClackData;
-import data.FileClackData;
-import data.MessageClackData;
+import data.*;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.net.*;
 
 /**
- * The ClackClient class represents the client user. A ClackClient object contains the username,
- * host name of the server connected to, port number connected to, and a boolean designating
- * whether the connection is open or not. The ClackClient object will also have two ClackData
- * objects representing data sent to the server and data received from the server.
  *
- * @author nikolaimelnikov/amandapolarolo
+ * A class that provides methods for use by a Clack client.
+ *
+ * @author Nikolai Melnikov
+ *
  */
-public class ClackClient {
 
-    public static void main ( String[] args ) {
+public class ClackClient
+{
+    public static void main ( String[] args )
+    {
         ClackClient clackClient;
-        if ( args.length == 0 ) {
+        if ( args.length == 0 )
+        {
             clackClient = new ClackClient();
-        } else {
+        } else
+        {
             Scanner scanner = new Scanner(args[0]);
             scanner.useDelimiter("@");
             String userName = scanner.next();
-            if (!scanner.hasNext()) {
+            if (!scanner.hasNext())
+            {
                 clackClient = new ClackClient(userName);
-            } else {
+            } else
+            {
                 scanner.useDelimiter("[@:]");
                 String hostName = scanner.next();
-                if (!scanner.hasNext()) {
+                if (!scanner.hasNext())
+                {
                     clackClient = new ClackClient(userName, hostName);
-                } else {
+                } else
+                {
                     int port = scanner.nextInt();
                     clackClient = new ClackClient(userName, hostName, port);
                 }
@@ -44,103 +47,124 @@ public class ClackClient {
         }
         clackClient.start();
     }
-    private static final int DEFAULT_PORT = 7000;  // The default port number
-    private static final String DEFAULT_KEY = "TIME";  // The default key for encryption and decryption
+
+    // constants
+    private static final String ANONYMOUS_USERNAME = "anon";
+
+    private static final String DEFAULT_HOST = "localhost";
+
+    private static final int DEFAULT_PORT = 7000;
+
     private static final boolean DEFAULT_CLOSE_CONNECTION = false;
+
     private static final ClackData DEFAULT_DATA_TO_SEND_TO_SERVER = null;
+
     private static final ClackData DEFAULT_DATA_RECEIVED_FROM_SERVER = null;
-    private String userName;  // A string representing the name of the client
-    private String hostName;  // A string representing the name of the computer representing the server
-    private int port;  // An integer representing the port number on the server connected to
-    private boolean closeConnection;  // A boolean representing whether the connection is closed or not
-    private ClackData dataToSendToServer;  // A ClackData object representing the data sent to the server
-    private ClackData dataToReceiveFromServer;  // A ClackData object representing the data received from the server
-    private Scanner inFromStd;  // A Scanner object representing the standard input
-
-    private ObjectOutputStream outToServer;
-
-    private ObjectInputStream inFromServer;
 
     private static final ObjectInputStream DEFAULT_IN_FROM_SERVER = null;
 
     private static final ObjectOutputStream DEFAULT_OUT_FROM_SERVER = null;
 
 
+    private final String userName;
+
+    private final String hostName;
+
+    private final int port;
+
+    private boolean closeConnection;
+
+    private ClackData dataToSendToServer;
+
+    private ClackData dataToReceiveFromServer;
+
+    private Scanner inFromStd;
+
+    private ObjectOutputStream outToServer;
+
+    private ObjectInputStream inFromServer;
+
     private Socket skt;
 
     /**
-     * The constructor to set up the username, host name, and port.
-     * The connection should be set to be open (closeConnection = false).
-     * Should set dataToSendToServer and dataToReceiveFromServer as null.
+     * Constructor that has userName, hostName, and port as its parameters.
      *
-     * @param userName a string representing the username of the client
-     * @param hostName a string representing the host name of the server
-     * @param port     an int representing the port number on the server connected to
+     * @param userName Value for userName
+     * @param hostName Value for hostName
+     * @param port Value for port number
      */
-    public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException {
-        if (userName == null) {
-            throw new IllegalArgumentException("The username cannot be null.");
+    public ClackClient(String userName, String hostName, int port) throws IllegalArgumentException
+    {
+
+        // IllegalArgumentException
+        if ( userName == null )
+        {
+            throw new IllegalArgumentException( "userName is null" );
         }
-        if (hostName == null) {
-            throw new IllegalArgumentException("The host name cannot be null.");
+        if ( hostName == null )
+        {
+            throw new IllegalArgumentException( "hostName is null" );
         }
-        if (port < 1024) {
-            throw new IllegalArgumentException("The port cannot be lesser than 1024.");
+        if ( port < 1024 )
+        {
+            throw new IllegalArgumentException( "port is less than 1024" );
         }
 
+        // if no exception, set values
         this.userName = userName;
+
         this.hostName = hostName;
+
         this.port = port;
+
         this.closeConnection = DEFAULT_CLOSE_CONNECTION;
+
         this.dataToSendToServer = DEFAULT_DATA_TO_SEND_TO_SERVER;
+
         this.dataToReceiveFromServer = DEFAULT_DATA_RECEIVED_FROM_SERVER;
+
         this.inFromServer = DEFAULT_IN_FROM_SERVER;
+
         this.outToServer = DEFAULT_OUT_FROM_SERVER;
+
     }
 
     /**
-     * The constructor to set up the port to the default port number 7000.
-     * The default port number should be set up as constant (e.g., DEFAULT_PORT).
-     * This constructor should call another constructor.
+     * Constructor that has userName and hostName as its parameters.
+     * port number is set to 7000.
      *
-     * @param userName a string representing the username of the client
-     * @param hostName a string representing the host name of the server
+     * @param userName Value for userName
+     * @param hostName Value for hostName
      */
-    public ClackClient(String userName, String hostName) throws IllegalArgumentException {
+    public ClackClient(String userName, String hostName) {
         this(userName, hostName, DEFAULT_PORT);
     }
 
     /**
-     * The constructor that sets the host name to be "localhost"
-     * (i.e., the server and the client programs run on the same computer).
-     * This constructor should call another constructor.
+     * Constructor that has userName as its parameter.
+     * hostName is set to "localhost", port number is set to 7000.
      *
-     * @param userName a string representing the username of the client
+     * @param userName Value for userName
      */
-    public ClackClient(String userName) throws IllegalArgumentException {
-        this(userName, "localhost");
+    public ClackClient(String userName) {
+        this(userName, DEFAULT_HOST, DEFAULT_PORT);
     }
 
     /**
-     * The default constructor that sets anonymous user.
-     * Should call another constructor.
+     * Default constructor. userName is set to "anon",
+     * hostName is set to "localhost", port number is set to 7000.
+     *
      */
-    public ClackClient() throws IllegalArgumentException {
-        this("Anon");
-    }
+    public ClackClient() { this(ANONYMOUS_USERNAME, DEFAULT_HOST, DEFAULT_PORT); }
+
+    // methods
 
     /**
-     * Starts the client's communication with the server.
-     * Does not return anything.
-     * Workflow:
-     * 1. Initializes this.inFromStd to be a Scanner object that can be used in readClientData()
-     * 2. While the connection is still running:
-     *    (a) Reads the client's data using readClientData()
-     *    (b) Sets this.dataToReceiveFromServer to be the same as this.dataToSendToServer
-     *    (c) Prints the data using printData()
-     * 3. Closes this.inFromStd.
+     * Starts the client. Alternates between reading data to send to the server and printing data received
+     * from the server.
      */
-    public void start() {
+    public void start()
+    {
         try {
             skt = new Socket(this.hostName, this.port);
             this.outToServer = new ObjectOutputStream ( skt.getOutputStream() );
@@ -155,7 +179,8 @@ public class ClackClient {
         }
     }
 
-    public void close() {
+    public void close()
+    {
         inFromStd.close();
         try {
             outToServer.close();
@@ -167,48 +192,55 @@ public class ClackClient {
     }
 
     /**
-     * Gets an input from the user through standard input, represented by this.inFromStd,
-     * and then initializes this.dataToSendToServer based on the following input:
-     * (a) DONE:              Closes the connection
-     * (b) SENDFILE filename: Initializes this.dataToSendToServer as FileClackData
-     *                        and attempts to read the given file
-     * (c) LISTUSERS:         Does nothing for now; eventually, will return a list of users
-     * (d) Anything else:     Initializes this.dataToSendToServer as MessageClackData
-     *                        with the given input
-     * this.dataToSendToServer should be encrypted using the default key.
-     * Does not return anything.
+     * Reads the data from the client. If the first word of dataToSendToServer is a
+     * command, that action is performed, otherwise the entire string of dataToSendToServer
+     * is sent as a message.
      */
-    public void readClientData() {
-        String nextToken = this.inFromStd.next();
+    public void readClientData()
+    {
 
-        if (nextToken.equals("DONE")) {
-            this.closeConnection = true;
-            this.dataToSendToServer = new MessageClackData(this.userName, nextToken, DEFAULT_KEY,
-                    ClackData.CONSTANT_LOGOUT);
+        String input = this.inFromStd.next();
 
-        } else if (nextToken.equals("SENDFILE")) {
-            String filename = this.inFromStd.next();
-            this.dataToSendToServer = new FileClackData(this.userName, filename, ClackData.CONSTANT_SENDFILE);
+        switch ( input )
+        {
 
-            try {
-                ((FileClackData) this.dataToSendToServer).readFileContents(DEFAULT_KEY);
-            } catch (IOException ioe) {
-                System.err.println("IOException occurs when reading a file: " + ioe.getMessage());
+            // command to log out
+            case ( "DONE" ):
+                this.closeConnection = true;
                 this.dataToSendToServer = null;
-            }
+                break;
 
-        } else if (nextToken.equals("LISTUSERS")) {
-            // Does nothing for now. Eventually, this will return a list of users.
-            // For Part 2, do not test LISTUSERS; otherwise, it may generate an error.
+            // command to send a file
+            case ( "SENDFILE" ):
+                try {
+                    this.dataToSendToServer = new FileClackData ( userName, inFromStd.next(), FileClackData.CONSTANT_SENDFILE );
+                    ((FileClackData)this.dataToSendToServer).readFileContents();
+                }
+                catch ( IOException ioe ) {
+                    dataToSendToServer = null;
+                    System.err.println( ioe.getMessage() );
+                }
+                break;
 
-        } else {
-            String message = nextToken + this.inFromStd.nextLine();
-            this.dataToSendToServer = new MessageClackData(this.userName, message, DEFAULT_KEY,
-                    ClackData.CONSTANT_SENDMESSAGE);
+            // command to list users. Not finished
+            case ( "LISTUSERS" ):
+                this.dataToSendToServer = new ListUsers (this.userName, ClackData.CONSTANT_LISTUSERS);
+                break;
+
+            // if the user does not input a command, the string itself is sent
+            default:
+                this.dataToSendToServer = new MessageClackData( userName, input + this.inFromStd.nextLine(), MessageClackData.CONSTANT_SENDMESSAGE);
+                break;
+
         }
+
     }
 
-    public void sendData(ClackData dataToSend) {
+    /**
+     * Sends data to server.
+     */
+    public void sendData(ClackData dataToSend)
+    {
         try {
             outToServer.writeObject(dataToSend);
         } catch ( InvalidClassException ice ) {
@@ -223,7 +255,8 @@ public class ClackClient {
     /**
      * Receives data from the server.
      */
-    public ClackData receiveData() {
+    public ClackData receiveData()
+    {
         try {
             dataToReceiveFromServer = (ClackData) inFromServer.readObject();
         } catch ( ClassCastException cce ) {
@@ -237,98 +270,103 @@ public class ClackClient {
     }
 
     /**
-     * Prints out the received data (the contents in the this.dataToReceiveFromServer)
-     * to the client's standard output. this.dataToReceiveFromServer should be decrypted
-     * using the default key.
-     * Should output something meaningful to the client seeing the data.
+     * Receives data from the server and returns it as a string.
      */
-    public void printData() {
-        if (this.dataToReceiveFromServer != null) {
-            System.out.println("From: " + this.dataToReceiveFromServer.getUserName());
-            System.out.println("Date: " + this.dataToReceiveFromServer.getDate());
-            System.out.println("Data: " + this.dataToReceiveFromServer.getData(DEFAULT_KEY));
-            System.out.println();
-        }
-    }
 
     /**
-     * Returns the username.
+     * Accessor that returns userName.
      *
-     * @return this.userName
+     * @return userName
      */
     public String getUserName() {
         return this.userName;
     }
 
     /**
-     * Returns the host name.
+     * Accessor that returns hostName.
      *
-     * @return this.hostName
+     * @return hostName
      */
     public String getHostName() {
         return this.hostName;
     }
 
     /**
-     * Returns the port.
+     * Accessor that returns port number.
      *
-     * @return this.port
+     * @return port number
      */
     public int getPort() {
         return this.port;
     }
 
+    /**
+     * Accessor that returns the closeConnection status
+     *
+     * @return a boolean representing whether the connection is closed
+     */
+
+    public boolean getCloseConnection() {
+        return this.closeConnection;
+    }
+
+    /**
+     * Computes and returns the hash code. All instance variables are used to compute the hash code,
+     * except dataToSendToServer and dataReceivedFromServer, which are currently always null.
+     *
+     * @return the hash code
+     */
     @Override
-    public int hashCode() {
-        // The following is only one of many possible implementations to generate the hash code.
-        // See the hashCode() method in other classes for some different implementations.
-
-        int result = 23;
-
-        // It is okay to select only some of the instance variables to calculate the hash code
-        // but must use the same instance variables with equals() to maintain consistency.
-        result = 31 * result + Objects.hashCode(this.userName);
-        result = 31 * result + Objects.hashCode(this.hostName);
-        result = 31 * result + this.port;
-        result = 31 * result + Objects.hashCode(this.closeConnection);
-        result = 31 * result + Objects.hashCode(this.dataToSendToServer);
-        result = 31 * result + Objects.hashCode(this.dataToReceiveFromServer);
-
+    public int hashCode()
+    {
+        int result = 17;
+        result = 37*result + this.userName.hashCode();
+        result = 37*result + this.hostName.hashCode();
+        result = 37*result + this.port;
+        result = 37*result;
+        if (this.closeConnection) result += 1;
+        result = 37*result + dataToSendToServer.hashCode();
+        result = 37*result + dataToReceiveFromServer.hashCode();
         return result;
     }
 
+    /**
+     * Checks whether two FileCLackData objects have the same values for
+     * userName, hostName, port, and closeConnection. Does not compare dataToSendToServer or
+     * dataReceivedFromServer, which are currently always null.
+     *
+     * @param obj Another instance of ClackClient
+     * @return equality boolean of the two instances
+     *
+     */
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof ClackClient)) {
-            return false;
-        }
-
-        // Casts other to be a ClackClient to access its instance variables.
-        ClackClient otherClackClient = (ClackClient) other;
-
-        // Compares all comparable instance variables of both ClackClient objects that determine uniqueness.
-        // It is okay to select only some of the instance variables for comparison but must use the same
-        // instance variables with hashCode() to maintain consistency.
-        return this.userName.equals(otherClackClient.userName) &&
-                this.hostName.equals(otherClackClient.hostName) &&
-                this.port == otherClackClient.port &&
-                this.closeConnection == otherClackClient.closeConnection &&
-                Objects.equals(this.dataToSendToServer, otherClackClient.dataToSendToServer) &&
-                Objects.equals(this.dataToReceiveFromServer, otherClackClient.dataToReceiveFromServer);
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof ClackClient)) return false;
+        ClackClient other = (ClackClient)obj;
+        return other.userName.equals(this.userName)
+                && other.hostName.equals(this.hostName)
+                && other.port == this.port
+                && other.closeConnection == this.closeConnection
+                && other.dataToSendToServer.equals(this.dataToSendToServer)
+                && other.dataToReceiveFromServer.equals(this.dataToReceiveFromServer);
     }
 
+    /**
+     * Returns the instance variables of ClackClient as a String. Prints the name
+     * and value of each variable on its own line.
+     *
+     * @return a formatted string with the name and value of each instance variable printed on its own line
+     */
     @Override
-    public String toString() {
-        // Should return a full description of the class with all instance variables.
-        return "This instance of ClackClient has the following properties:\n"
-                + "Username: " + this.userName + "\n"
-                + "Host name: " + this.hostName + "\n"
-                + "Port number: " + this.port + "\n"
-                + "Connection status: " + (this.closeConnection ? "Closed" : "Open") + "\n"
-                + "Data to send to the server: " + this.dataToSendToServer + "\n"
-                + "Data to receive from the server: " + this.dataToReceiveFromServer + "\n";
+    public String toString()
+    {
+        return
+                "userName: \"" + this.userName + "\"\n" +
+                        "hostName: \"" + this.hostName +"\"\n" +
+                        "port: " + this.port + '\n' +
+                        "closeConnection: " + this.closeConnection + '\n' +
+                        "dataToSendToServer: " + this.dataToSendToServer + '\n' +
+                        "dataReceivedFromServer: " + this.dataToReceiveFromServer;
     }
 }

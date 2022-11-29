@@ -1,212 +1,178 @@
 package data;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.io.Serializable;
 
 /**
- * Class ClackData is a superclass that represents the data sent between the client and the
- * server. An object of type ClackData consists of the username of the client user, the date
- * and time at which the data was sent and the data itself, which can either be a message
- * (MessageClackData) or the name and contents of a file (FileClackData). Note that ClackData
- * should not be instantiable.
+ * This class creates a ClackData which represents data being sent to and from a server and a user in the program Clack.
+ * This class contains a userName represented by a string (the sender of the data), a type represented by an integer
+ * (0,1,2,3 respective to the order of the following list),
+ *      (CONSTANT_LISTUSERS: give a listing of all users connected to this session
+ *      CONSTANT_LOGOUT: log out, i.e., close this client’s connection
+ *      CONSTANT_SENDMESSAGE: send a message
+ *      CONSTANT_SENDFILE: send a file)
+ * and a date and time the ClackData object was made, stored using the class Date from java.util.Date.
+ * This is a superclass of FileClackData and MessageClackData.
  *
- * @author nikolaimelnikov/amandapolarolo
+ * @author Nikolai Melnikov
  */
+
 public abstract class ClackData implements Serializable {
-    /**
-     * For giving a listing of all users connected to this session.
-     */
+
+    private final String userName;
+
+    private final int type;
+
+    private final Date date;
+
+
     public static final int CONSTANT_LISTUSERS = 0;
 
-    /**
-     * For logging out, i.e., close this client's connection.
-     */
     public static final int CONSTANT_LOGOUT = 1;
 
-    /**
-     * For sending a message.
-     */
     public static final int CONSTANT_SENDMESSAGE = 2;
 
-    /**
-     * For sending a file.
-     */
     public static final int CONSTANT_SENDFILE = 3;
 
-    /**
-     * A string representing the name of the client user.
-     */
-    protected String userName;
+    protected static final String ANONYMOUS_USER = "Anon";
+
 
     /**
-     * An integer representing the kind of data exchanged between the client and the server.
-     */
-    protected int type;
-
-    /**
-     * A Date object representing the date and time when ClackData object is created.
-     */
-    protected Date date;
-
-    /**
-     * The constructor to set up the instance variable username and type.
-     * The instance variable date should be created automatically here.
+     * ClackData constructor initializes the userName and type with user-provided data. It initializes the date to the
+     * date and time of the construction of the object ClackData using the default constructor of the class Date found
+     * in java.util.Date.
      *
-     * @param userName a string representing the name of the client user
-     * @param type     an int representing the data type
+     * @param userName      userName of the sender of the ClackData
+     * @param type          sets the type of ClackData
      */
-    public ClackData(String userName, int type) {
+    public ClackData(String userName, int type)
+    {
         this.userName = userName;
         this.type = type;
         this.date = new Date();
     }
 
     /**
-     * The constructor to create an anonymous user, whose name should be "Anon".
-     * This constructor should call another constructor.
+     * ClackData constructor initializes the type with user-provided data. It initializes
+     * the userName to "anon", an anonymous user. It also creates
+     * a date at the time of ClackData's creation.
      *
-     * @param type an int representing the data type
+     * @param type          sets the type of ClackData
      */
-    public ClackData(int type) {
-        this("Anon", type);
-    }
+    public ClackData(int type) { this(ANONYMOUS_USER, type); }
 
     /**
-     * The default constructor.
-     * This constructor should call another constructor.
-     * type should get defaulted to CONSTANT_LOGOUT.
+     * Default constructor that initializes the userName to "anon" and the type to 0,
+     * Also, it creates a date at the time of ClackData's creation.
      */
     public ClackData() {
-        this(CONSTANT_LOGOUT);
+        this (ANONYMOUS_USER, CONSTANT_LISTUSERS);
     }
 
     /**
-     * Returns the type.
+     * Accessor that returns the type integer
      *
-     * @return this.type
+     * @return          integer representing the type of the ClackData object
      */
     public int getType() {
         return this.type;
     }
 
     /**
-     * Returns the username.
+     * Accessor that returns userName
      *
-     * @return this.userName
+     * @return          string of the userName of the ClackData's sender
      */
     public String getUserName() {
         return this.userName;
     }
 
     /**
-     * Returns the date.
+     * Accessor that returns the creation date
      *
-     * @return this.date
+     * @return          creation time/date of the ClackData object
      */
     public Date getDate() {
         return this.date;
     }
 
     /**
-     * The abstract method to return the data contained in this class
-     * (contents of instant message or contents of a file).
+     * Encrypts a string using a Vigenère cipher, given a key
      *
-     * @return the data contained in this class
+     * @param inputStringToEncrypt          String to be encrypted
+     * @param key                           String of the encryption key, a combination of letters
+     * @return                              An encrypted version of the inputString
      */
-    public abstract String getData();
+    protected String encrypt( String inputStringToEncrypt, String key )
+    {
+        String output = "";
+        for (int i = 0, n = 0; i < inputStringToEncrypt.length(); i++)
+        {
+            char nextChar = inputStringToEncrypt.charAt(i);
 
-    /**
-     * This abstract method to decrypt the data contained in this class
-     * (contents of instant message or contents of a file) using the given
-     * key and return the decrypted string.
-     *
-     * @param key a string used as the key to decrypt the data contained in this class
-     * @return the decrypted string of the data contained in this class
-     */
-    public abstract String getData(String key);
-
-    /**
-     * This method takes in an input string to encrypt using a key, and outputs
-     * the encrypted string. This method implements the Vignère cipher to perform
-     * the encryption. The key is assumed to be always nonnull and nonempty.
-     *
-     * @param inputStringToEncrypt a string to encrypt
-     * @param key                  a string used as the key for encryption
-     * @return the encrypted string
-     */
-    protected String encrypt(String inputStringToEncrypt, String key) {
-        if (inputStringToEncrypt == null) {
-            return null;
-        }
-
-        final int keyLen = key.length();
-        int keyIndex = 0;
-        StringBuilder stringEncrypted = new StringBuilder();
-
-        for (int i = 0; i < inputStringToEncrypt.length(); i++) {
-            char inputCharToEncrypt = inputStringToEncrypt.charAt(i);
-            char inputCharEncrypted;
-
-            if (Character.isLowerCase(inputCharToEncrypt)) {
-                char keyChar = Character.toLowerCase(key.charAt(keyIndex));
-                inputCharEncrypted = (char) (((inputCharToEncrypt - 'a') + (keyChar - 'a')) % 26 + 'a');
-                keyIndex = (keyIndex + 1) % keyLen;
-
-            } else if (Character.isUpperCase(inputCharToEncrypt)) {
-                char keyChar = Character.toUpperCase(key.charAt(keyIndex));
-                inputCharEncrypted = (char) (((inputCharToEncrypt - 'A') + (keyChar - 'A')) % 26 + 'A');
-                keyIndex = (keyIndex + 1) % keyLen;
-
-            } else {
-                inputCharEncrypted = inputCharToEncrypt;
+            // ASCII 65 is 'A', 90 is 'Z', 97 is 'a', 122 is 'z'
+            if ( (int)nextChar >= 65 && (int)nextChar <= 90 )
+            {
+                output += (char)(((nextChar - 65) + (Character.toUpperCase(key.charAt(n)) -65)) % 26 + 65);
+                n = ++n % key.length();
+            }
+            else if ( (int)nextChar >= 97 && (int)nextChar <= 122 )
+            {
+                output += (char)(((nextChar - 97) + (Character.toLowerCase(key.charAt(n)) -97)) % 26 + 97);
+                n = ++n % key.length();
             }
 
-            stringEncrypted.append(inputCharEncrypted);
+            else output += nextChar;
+
         }
 
-        return stringEncrypted.toString();
+        return output;
+    }
+
+
+    /**
+     * Decrypts a string using a Vignère cipher, given a key
+     *
+     * @param inputStringToDecrypt          String of an input to be decrypted
+     * @param key                           String of the key used to form the decryption, combination of letters.
+     * @return                              A decrypted version of the inputString
+     */
+    protected String decrypt( String inputStringToDecrypt, String key )
+    {
+        String output = "";
+        for (int i = 0, n = 0; i < inputStringToDecrypt.length(); i++)
+        {
+            char nextChar = inputStringToDecrypt.charAt(i);
+
+            // ASCII 97 is 'a', 122 is 'z', 90 is 'Z', and 65 is 'A'
+            if ((int)nextChar >= 65 && (int)nextChar <= 90)
+            {
+                output += (char)((nextChar - Character.toUpperCase(key.charAt(n)) + 26) % 26 + 65);
+                n = ++n % key.length();
+            }
+            else if ((int)nextChar >= 97 && (int)nextChar <= 122)
+            {
+                output += (char)((nextChar - Character.toLowerCase(key.charAt(n)) + 26) % 26 + 97);
+                n = ++n % key.length();
+            }
+
+            else output += nextChar;
+
+        }
+        return output;
     }
 
     /**
-     * This method takes in an input string to decrypt using a key, and outputs
-     * the decrypted string. This method implements the backwards decryption of
-     * the Vignère cipher to perform the decryption. The key is assumed to be
-     * always nonnull and nonempty.
+     * Accessor that returns data.
      *
-     * @param inputStringToDecrypt a string to decrypt
-     * @param key                  a string used as the key for decryption
-     * @return the decrypted string
+     * @return          Data of an indeterminate type
      */
-    protected String decrypt(String inputStringToDecrypt, String key) {
-        if (inputStringToDecrypt == null) {
-            return null;
-        }
+    public abstract Object getData();
 
-        final int keyLen = key.length();
-        int keyIndex = 0;
-        StringBuilder stringDecrypted = new StringBuilder();
+    /**
+     * Accessor that returns data using a key to decipher to data.
+     *
+     * @return          Data of an indeterminate type
+     */
 
-        for (int i = 0; i < inputStringToDecrypt.length(); i++) {
-            char inputCharToDecrypt = inputStringToDecrypt.charAt(i);
-            char inputCharDecrypted;
-
-            if (Character.isLowerCase(inputCharToDecrypt)) {
-                char keyChar = Character.toLowerCase(key.charAt(keyIndex));
-                inputCharDecrypted = (char) ((inputCharToDecrypt - keyChar + 26) % 26 + 'a');
-                keyIndex = (keyIndex + 1) % keyLen;
-
-            } else if (Character.isUpperCase(inputCharToDecrypt)) {
-                char keyChar = Character.toUpperCase(key.charAt(keyIndex));
-                inputCharDecrypted = (char) ((inputCharToDecrypt - keyChar + 26) % 26 + 'A');
-                keyIndex = (keyIndex + 1) % keyLen;
-
-            } else {
-                inputCharDecrypted = inputCharToDecrypt;
-            }
-
-            stringDecrypted.append(inputCharDecrypted);
-        }
-
-        return stringDecrypted.toString();
-    }
 }

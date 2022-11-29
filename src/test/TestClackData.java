@@ -1,207 +1,148 @@
 package test;
 
-import data.ClackData;
 import data.FileClackData;
 import data.MessageClackData;
 
 import java.io.IOException;
 
-/**
- * You don't have to have a Javadoc for a test class.
- * You should test all implemented functions in the data classes,
- * whether they are in the superclass or in the subclasses.
- */
-public class TestClackData {
-    public static void main(String[] args) {
-        // The key for encryption and decryption.
-        final String KEY = "TIME";
+public class TestClackData
+{
 
-        // Tests both constructors of MessageClackData.
-        MessageClackData messageClackData1 = new MessageClackData();
-        MessageClackData messageClackData2 =
-                new MessageClackData("testUser1", "testMessage", ClackData.CONSTANT_SENDMESSAGE);
-        MessageClackData messageClackData3 =
-                new MessageClackData("testUser2", "testMessage", KEY, ClackData.CONSTANT_SENDMESSAGE);
+    private static final String TEST_USERNAME = "jto33";
+    private static final String TEST_MESSAGE = "Something Something blah blah blah";
+    private static final String TEST_FILENAME = "src/test/TestRead.txt";
+    private static final String TEST_CHANGED_FILENAME1 = "src/test/secret.txt";
+    private static final String TEST_CHANGED_FILENAME2 = "src/test/something.txt";
+    private static final String TEST_CHANGED_FILENAME3 = "src/test/TestReadEncrypted.txt";
+    private static final String TEST_CHANGED_FILENAME4 = "src/test/encrypted.txt";
+    private static final String TEST_KEY = "gwahgw";
+    private static final int TEST_SENDMESSAGE = 2;
+    public static final int TEST_SENDFILE = 3;
 
-        // Tests both constructors of FileClackData.
-        FileClackData fileClackData1 = new FileClackData();
-        FileClackData fileClackData2 =
-                new FileClackData("testUser2", "filename0", ClackData.CONSTANT_SENDFILE);
 
-        // Tests int getType().
-        System.out.println("messageClackData1 getType(): " + messageClackData1.getType());
-        System.out.println("messageClackData2 getType(): " + messageClackData2.getType());
-        System.out.println("fileClackData1 getType(): " + fileClackData1.getType());
-        System.out.println("fileClackData2 getType(): " + fileClackData2.getType());
-        System.out.println();
 
-        // Tests String getUserName().
-        System.out.println("messageClackData1 getUserName(): " + messageClackData1.getUserName());
-        System.out.println("messageClackData2 getUserName(): " + messageClackData2.getUserName());
-        System.out.println("fileClackData1 getUserName(): " + fileClackData1.getUserName());
-        System.out.println("fileClackData2 getUserName(): " + fileClackData2.getUserName());
-        System.out.println();
+    public static void main(String[] args)
+    {
+        MessageClackData mcd1 = new MessageClackData();
+        MessageClackData mcd2 = new MessageClackData(TEST_USERNAME, TEST_MESSAGE, TEST_SENDMESSAGE);
+        MessageClackData mcd3 = new MessageClackData(TEST_USERNAME, TEST_MESSAGE, TEST_KEY, TEST_SENDMESSAGE);
+        FileClackData fcd1 = new FileClackData();
+        FileClackData fcd2 = new FileClackData(TEST_USERNAME, TEST_FILENAME, TEST_SENDFILE);
 
-        // Tests Date getDate().
-        System.out.println("messageClackData1 getDate(): " + messageClackData1.getDate());
-        System.out.println("messageClackData2 getDate(): " + messageClackData2.getDate());
-        System.out.println("fileClackData1 getDate(): " + fileClackData1.getDate());
-        System.out.println("fileClackData2 getDate(): " + fileClackData2.getDate());
-        System.out.println();
+        System.out.println("The type of mcd1 is: " + mcd1.getType());
+        System.out.println("The username of the person who made mcd1 is: " + mcd1.getUserName());
+        System.out.println("The date mcd1 was created: " + mcd1.getDate());
+        System.out.println("The hash code of mcd1 is: " + mcd1.hashCode());
+        System.out.println("Is mcd1 equivalent to mcd2: " + mcd1.equals(mcd2));
+        System.out.println("The message of mcd1 is: " + mcd1.getData());
+        System.out.println(mcd1);
 
-        // Tests String getData().
-        System.out.println("messageClackData1 getData(): " + messageClackData1.getData());
-        System.out.println("messageClackData2 getData(): " + messageClackData2.getData());
-        System.out.println("fileClackData1 getData(): " + fileClackData1.getData());
-        System.out.println("fileClackData2 getData(): " + fileClackData2.getData());
-        System.out.println();
+        System.out.println("The type of mcd2 is: " + mcd2.getType());
+        System.out.println("The username of the person who made mcd2 is: " + mcd2.getUserName());
+        System.out.println("The date mcd2 was created: " + mcd2.getDate());
+        System.out.println("The hash code of mcd2 is: " + mcd2.hashCode());
+        System.out.println("Is mcd2 equivalent to mcd1: " + mcd2.equals(mcd1));
+        System.out.println("The message of mcd2 is: " + mcd2.getData());
+        System.out.println(mcd2);
 
-        // Tests String getData(String key) of MessageClackData.
-        System.out.println("messageClackData3 getData(): " + messageClackData3.getData());
-        System.out.println("Using the key: " + KEY);
-        System.out.println("messageClackData3 getData(key): " + messageClackData3.getData(KEY));
-        System.out.println();
+        System.out.println("The type of fcd1 is: " + fcd1.getType());
+        System.out.println("The username of the person who made fcd1 is: " + fcd1.getUserName());
+        System.out.println("The date fcd1 was created: " + fcd1.getDate());
+        System.out.println("The hash code of fcd1 is: " + fcd1.hashCode());
+        System.out.println("Is fcd1 equivalent to fcd2: " + fcd1.equals(fcd2));
+        System.out.println("The file name of fcd1 is: " + fcd1.getFileName());
+        System.out.println("The file content of fcd1 is: " + fcd1.getData());
+        System.out.println(fcd1);
 
-        // Tests int hashCode().
-        System.out.println("messageClackData1 hashCode(): " + messageClackData1.hashCode());
-        System.out.println("messageClackData2 hashCode(): " + messageClackData2.hashCode());
-        System.out.println("fileClackData1 hashCode(): " + fileClackData1.hashCode());
-        System.out.println("fileClackData2 hashCode(): " + fileClackData2.hashCode());
-        System.out.println();
+        System.out.println("The type of fcd2 is: " + fcd2.getType());
+        System.out.println("The username of the person who made fcd2 is: " + fcd2.getUserName());
+        System.out.println("The date fcd2 was created: " + fcd2.getDate());
+        System.out.println("The hash code of fcd2 is: " + fcd2.hashCode());
+        System.out.println("Is fcd2 equivalent to fcd1: " + fcd2.equals(fcd1));
+        System.out.println("The file name of fcd2 is: " + fcd2.getFileName());
+        System.out.println("The file content of fcd2 is: " + fcd2.getData());
+        System.out.println(fcd2);
 
-        // Tests boolean equals(Object other).
-        System.out.println("messageClackData1 equals null: "
-                + messageClackData1.equals(null));
-        System.out.println("messageClackData1 equals messageClackData1: "
-                + messageClackData1.equals(messageClackData1));
-        System.out.println("messageClackData1 equals messageClackData2: "
-                + messageClackData1.equals(messageClackData2));
-        System.out.println("messageClackData2 equals messageClackData1: "
-                + messageClackData2.equals(messageClackData1));
-        System.out.println("messageClackData1 equals fileClackData1: "
-                + messageClackData1.equals(fileClackData1));
-        System.out.println("fileClackData1 equals null: "
-                + fileClackData1.equals(null));
-        System.out.println("fileClackData1 equals fileClackData1: "
-                + fileClackData1.equals(fileClackData1));
-        System.out.println("fileClackData1 equals fileClackData2: "
-                + fileClackData1.equals(fileClackData2));
-        System.out.println("fileClackData2 equals fileClackData1: "
-                + fileClackData2.equals(fileClackData1));
-        System.out.println("fileClackData1 equals messageClackData1: "
-                + fileClackData1.equals(messageClackData1));
-        System.out.println();
-
-        // Tests String toString().
-        System.out.println("messageClackData1 toString():\n" + messageClackData1);
-        System.out.println("messageClackData2 toString():\n" + messageClackData2);
-        System.out.println("fileClackData1 toString():\n" + fileClackData1);
-        System.out.println("fileClackData2 toString():\n" + fileClackData2);
-        System.out.println();
-
-        // Tests String getFileName() and void setFileName(String fileName) of FileClackData.
-        System.out.println("fileClackData1 getFileName(): " + fileClackData1.getFileName());
-        String filename1 = "filename1";
-        System.out.println("Sets the filename of fileClackData1 to be " + filename1);
-        fileClackData1.setFileName(filename1);
-        System.out.println("fileClackData1 getFileName(): " + fileClackData1.getFileName());
-        System.out.println("fileClackData1 hashCode(): " + fileClackData1.hashCode());
-        System.out.println("fileClackData1 equals fileClackData1: " + fileClackData1.equals(fileClackData1));
-        System.out.println("fileClackData1 equals fileClackData2: " + fileClackData1.equals(fileClackData2));
-        System.out.println("fileClackData1 toString():\n" + fileClackData1);
-        System.out.println();
-
-        System.out.println("fileClackData2 getFileName(): " + fileClackData2.getFileName());
-        String filename2 = "filename2";
-        System.out.println("Sets the filename of fileClackData2 to be " + filename2);
-        fileClackData2.setFileName(filename2);
-        System.out.println("fileClackData2 getFileName(): " + fileClackData2.getFileName());
-        System.out.println("fileClackData2 hashCode(): " + fileClackData2.hashCode());
-        System.out.println("fileClackData2 equals fileClackData2: " + fileClackData2.equals(fileClackData2));
-        System.out.println("fileClackData2 equals fileClackData1: " + fileClackData2.equals(fileClackData1));
-        System.out.println("fileClackData2 toString():\n" + fileClackData2);
-        System.out.println();
-
-        // Tests void readFileContents() of FileClackData.
         try {
-            System.out.println("fileClackData1 readFileContents():");
-            fileClackData1.setFileName("Part2_document.txt");
-            System.out.println("Reading from the file: " + fileClackData1.getFileName());
-            fileClackData1.readFileContents();
-            System.out.println("fileClackData1 getData(): " + fileClackData1.getData());
-            System.out.println();
+            // fcd1.readFileContents(); // will throw IOException, testing purposes
+            fcd2.readFileContents();
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+        fcd1.setFileName(TEST_CHANGED_FILENAME1);
+        fcd2.setFileName(TEST_CHANGED_FILENAME2);
 
-            System.out.println("fileClackData2 readFileContents():");
-            fileClackData2.setFileName("wrong_file");
-            System.out.println("Error should be printed out when reading from the file: "
-                    + fileClackData2.getFileName());
-            fileClackData2.readFileContents();
-            System.out.println();
+        System.out.println("The type of fcd1 is: " + fcd1.getType());
+        System.out.println("The username of the person who made fcd1 is: " + fcd1.getUserName());
+        System.out.println("The date fcd1 was created: " + fcd1.getDate());
+        System.out.println("The hash code of fcd1 is: " + fcd1.hashCode());
+        System.out.println("Is fcd1 equivalent to fcd2: " + fcd1.equals(fcd2));
+        System.out.println("The file name of fcd1 is: " + fcd1.getFileName());
+        System.out.println("The file content of fcd1 is: " + fcd1.getData());
+        System.out.println(fcd1);
 
-        } catch (Exception ioe) {
-            System.err.println("Exception should not be thrown.");
+        System.out.println("The type of fcd2 is: " + fcd2.getType());
+        System.out.println("The username of the person who made fcd2 is: " + fcd2.getUserName());
+        System.out.println("The date fcd2 was created: " + fcd2.getDate());
+        System.out.println("The hash code of fcd2 is: " + fcd2.hashCode());
+        System.out.println("Is fcd2 equivalent to fcd1: " + fcd2.equals(fcd1));
+        System.out.println("The file name of fcd2 is: " + fcd2.getFileName());
+        System.out.println("The file content of fcd2 is: " + fcd2.getData());
+        System.out.println(fcd2);
+
+        System.out.println("The file content of fcd1 is: " + fcd1.getData());
+        //fcd1.writeFileContents(); NullPointerException due to default parameters
+        try {
+            // fcd1.readFileContents(); // will throw IOException, testing purposes
+            fcd2.readFileContents();
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
         }
 
-        // Tests void writeFileContents() of FileClackData.
-        System.out.println("fileClackData1 writeFileContents():");
-        fileClackData1.setFileName("test_file_write.txt");
-        System.out.println("Writing to the file: " + fileClackData1.getFileName());
-        fileClackData1.writeFileContents();
-        System.out.println();
 
-        System.out.println("fileClackData2 writeFileContents():");
-        fileClackData2.setFileName("./wrong_path/wrong_file");
-        System.out.println("Error should be printed out when writing to the file: "
-                + fileClackData2.getFileName());
-        fileClackData2.writeFileContents();
-        System.out.println();
-
-        // Tests void readFileContents(String key) and String getData(String key) of FileClackData.
-        // Indirectly tests String encrypt(String inputStringToEncrypt, String key) and
-        // String decrypt(String inputStringToDecrypt, String key) of ClackData.
+        fcd1.setFileName(TEST_CHANGED_FILENAME3);
         try {
-            System.out.println("fileClackData1 readFileContents(key):");
-            System.out.println("Using the key: " + KEY);
-            fileClackData1.setFileName("Part2_document.txt");
-            System.out.println("Reading from the file: " + fileClackData1.getFileName());
-            fileClackData1.readFileContents(KEY);
-            System.out.println("fileClackData1 getData(): " + fileClackData1.getData());
-            System.out.println("fileClackData1 getData(key): " + fileClackData1.getData(KEY));
-            System.out.println();
-
-            System.out.println("fileClackData2 readFileContents(key):");
-            System.out.println("Using the key: " + KEY);
-            fileClackData2.setFileName("wrong_file");
-            System.out.println("Error should be printed out when reading from the file: "
-                    + fileClackData2.getFileName());
-            fileClackData2.readFileContents(KEY);
-            System.out.println();
-
-        } catch (Exception ioe) {
-            System.err.println("Exception should not be thrown.");
+            fcd1.readFileContents("GRKLP");
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
         }
 
-        // Tests void writeFileContents(String key) of FileClackData.
-        // Indirectly tests String encrypt(String inputStringToEncrypt, String key) and
-        // String decrypt(String inputStringToDecrypt, String key) of ClackData.
-        System.out.println("fileClackData1 writeFileContents() for encrypted file contents:");
-        fileClackData1.setFileName("test_file_write_encrypted.txt");
-        System.out.println("Writing to the file: " + fileClackData1.getFileName());
-        fileClackData1.writeFileContents();
-        System.out.println();
+        System.out.println("The type of fcd1 is: " + fcd1.getType());
+        System.out.println("The username of the person who made fcd1 is: " + fcd1.getUserName());
+        System.out.println("The date fcd1 was created: " + fcd1.getDate());
+        System.out.println("The hash code of fcd1 is: " + fcd1.hashCode());
+        System.out.println("Is fcd1 equivalent to fcd2: " + fcd1.equals(fcd2));
+        System.out.println("The file name of fcd1 is: " + fcd1.getFileName());
+        System.out.println("The encrypted file content of fcd1 is: " + fcd1.getData());
+        System.out.println("The decrypted file content of fcd1 is: " + fcd1.getData("GRKLP"));
+        System.out.println(fcd1);
 
-        System.out.println("fileClackData1 writeFileContents(key) for encrypted file contents:");
-        System.out.println("Using the key: " + KEY);
-        fileClackData1.setFileName("test_file_write_decrypted.txt");
-        System.out.println("Writing to the file: " + fileClackData1.getFileName());
-        fileClackData1.writeFileContents(KEY);
-        System.out.println();
+        fcd1.setFileName(TEST_CHANGED_FILENAME2);
 
-        System.out.println("fileClackData2 writeFileContents(key):");
-        System.out.println("Using the key: " + KEY);
-        fileClackData2.setFileName("./wrong_path/wrong_file");
-        System.out.println("Error should be printed out when writing to the file: "
-                + fileClackData2.getFileName());
-        fileClackData2.writeFileContents(KEY);
+        try {
+            fcd1.readFileContents();
+        } catch (IOException ioe) {
+            System.err.println(ioe.getMessage());
+        }
+
+        fcd1.setFileName(TEST_CHANGED_FILENAME4);
+
+        try {
+            fcd1.writeFileContents("GRKLP");
+        }
+        catch ( IOException ioe ) {
+            System.err.println( ioe.getMessage() );
+        }
+
+
+
+        System.out.println("The type of mcd3 is: " + mcd3.getType());
+        System.out.println("The username of the person who made mcd3 is: " + mcd3.getUserName());
+        System.out.println("The date mcd3 was created: " + mcd3.getDate());
+        System.out.println("The hash code of mcd3 is: " + mcd3.hashCode());
+        System.out.println("Is mcd3 equivalent to mcd2: " + mcd3.equals(mcd2));
+        System.out.println("The encrypted message of mcd3 is: " + mcd3.getData());
+        System.out.println("The decrypted message of mcd3 is: " + mcd3.getData(TEST_KEY));
+        System.out.println(mcd3);
     }
 }

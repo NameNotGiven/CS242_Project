@@ -1,202 +1,229 @@
 package data;
-
 import java.io.*;
-import java.util.Objects;
+import java.util.*;
+import java.io.Serializable;
 
 /**
- * The child of ClackData, whose data is the name and contents of a file.
+ * The class creates a FileClackData that is a subclass of ClackData. Additionally, FileClackData has a filename
+ * represented by a string and the file's contents (fileContents) represented by a string.
  *
- * @author nikolaimelnikov/amandapolarolo
+ * @author Nikolai Melnikov
  */
-public class FileClackData extends ClackData {
-    private String fileName;  // A string representing the name of a file
-    private String fileContents;  // A string representing the contents of a file
+public class FileClackData extends ClackData
+{
+    private String fileName;
+
+    private String fileContents;
+
+    private static final String DEFAULT_FILE_CONTENTS = null;
+
+    private static final String DEFAULT_FILE_NAME = "filename";
 
     /**
-     * The constructor to set up the instance variables username, fileName, and type.
-     * Should call the super constructor.
-     * The instance variable fileContents should be initialized to be null.
+     * FileClackData constructor that initializes the userName, fileName, and type with user provided data. Sets the
+     * file contents to be null for the time being, incomplete code segment.
      *
-     * @param userName a string representing the name of the client user
-     * @param fileName a string representing the name of a file
-     * @param type     an int representing the data type
+     *
+     * @param userName          userName of the sender of the FileClackData, inherited from ClackData
+     * @param fileName          fileName of the file in FileClackData
+     * @param type              dictates the type of FileClackData, inherited from ClackData
      */
-    public FileClackData(String userName, String fileName, int type) {
+    public FileClackData(String userName,String fileName, int type)
+    {
         super(userName, type);
         this.fileName = fileName;
-        this.fileContents = null;
+        this.fileContents = DEFAULT_FILE_CONTENTS;
     }
 
     /**
-     * The default constructor.
-     * This constructor should call the super constructor.
+     * FileClackData default constructor that initializes the username to "anon", fileName to "filename", and
+     * type to 3.
      */
-    public FileClackData() {
-        super(ClackData.CONSTANT_SENDFILE);
-        this.fileName = "";
-        this.fileContents = null;
+    public FileClackData()
+    {
+        this(ANONYMOUS_USER, DEFAULT_FILE_NAME, CONSTANT_SENDFILE);
     }
 
     /**
-     * Sets the file name in this object.
+     * This is a mutator for the fileName of FileClackData
      *
-     * @param fileName a string representing the name of a file
+     * @param fileName          new fileName string
      */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+    public void setFileName(String fileName) { this.fileName = fileName; }
 
     /**
-     * Returns the file name.
+     * This is an accessor for the fileName
      *
-     * @return this.fileName
+     * @return          string of the fileName for FIleClackData
      */
-    public String getFileName() {
-        return this.fileName;
-    }
-
-    @Override
-    public String getData() {
-        return this.fileContents;
-    }
-
-    @Override
-    public String getData(String key) {
-        return decrypt(this.fileContents, key);
-    }
+    public String getFileName() { return this.fileName; }
 
     /**
-     * Does non-secure file reads. Opens the file pointed to by the this.fileName,
-     * reads the contents of the file, and closes the file.
-     * Does not return anything.
+     * Reads from a file, using FileClackData's fileName, to determine FileClackData's fileContents
      *
-     * @throws IOException if the file reads fail for any I/O issues other than file not found
+     * @throws IOException          Exception thrown if file is not found
      */
-    public void readFileContents() throws IOException {
-        this.fileContents = readFileContentsHelper();
-    }
-
-    /**
-     * Does secure file reads. Opens the file pointed to by the this.fileName,
-     * reads the contents of the file, encrypts the contents to this.fileContents
-     * using the given key, and closes the file.
-     * Does not return anything.
-     *
-     * @param key a string used as the key to encrypt the file contents
-     * @throws IOException if the file reads fail for any I/O issues other than file not found
-     */
-    public void readFileContents(String key) throws IOException {
-        this.fileContents = encrypt(readFileContentsHelper(), key);
-    }
-
-    /**
-     * Does non-secure file writes. Opens the file pointed to by the this.fileName,
-     * writes the contents of this.fileContents to the file, and closes the file.
-     * Does not return anything.
-     */
-    public void writeFileContents() {
-        writeFileContentsHelper(this.fileContents);
-    }
-
-    /**
-     * Does secure file writes. Opens the file pointed to by the this.fileName,
-     * decrypts the contents of this.fileContents and writes them to the file,
-     * and closes the file.
-     * Does not return anything.
-     *
-     * @param key a string used as the key to decrypt the file contents
-     */
-    public void writeFileContents(String key) {
-        writeFileContentsHelper(decrypt(this.fileContents, key));
-    }
-
-    @Override
-    public int hashCode() {
-        // The following is only one of many possible implementations to generate the hash code.
-        // See the hashCode() method in other classes for some different implementations.
-        // It is okay to select only some of the instance variables to calculate the hash code
-        // but must use the same instance variables with equals() to maintain consistency.
-        return Objects.hash(this.userName, this.type, this.fileName, this.fileContents);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof FileClackData)) {
-            return false;
-        }
-
-        // Casts other to be a FileClackData to access its instance variables.
-        FileClackData otherFileClackData = (FileClackData) other;
-
-        // Compares the selected instance variables of both FileClackData objects that determine uniqueness.
-        // It is okay to select only some of the instance variables for comparison but must use the same
-        // instance variables with hashCode() to maintain consistency.
-        return this.userName.equals(otherFileClackData.userName)
-                && this.type == otherFileClackData.type
-                && Objects.equals(this.fileName, otherFileClackData.fileName)
-                && Objects.equals(this.fileContents, otherFileClackData.fileContents);
-    }
-
-    @Override
-    public String toString() {
-        // Should return a full description of the class with all instance variables,
-        // including those in the super class.
-        return "This instance of FileClackData has the following properties:\n"
-                + "Username: " + this.userName + "\n"
-                + "Type: " + this.type + "\n"
-                + "Date: " + this.date.toString() + "\n"
-                + "File Name: " + this.fileName + "\n"
-                + "File Contents: " + this.fileContents + "\n";
-    }
-
-    /**
-     * The helper method for both readFileContents(). Opens the file pointed to
-     * by the this.fileName, reads the contents of the file, closes the file, and
-     * returns it as a string.
-     *
-     * @return a string representing the file contents read
-     * @throws IOException if file reads fail for any reason other than file not found
-     */
-    private String readFileContentsHelper() throws IOException {
-        StringBuilder fileContentsReadBuilder = new StringBuilder();
+    public void readFileContents() throws IOException
+    {
+        this.fileContents = "";
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(this.fileName));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                fileContentsReadBuilder.append(line).append("\n");
+            Scanner scan = new Scanner(new File(this.fileName));
+            while (scan.hasNext()) {
+                String nextString = scan.next();
+                this.fileContents += nextString + " ";
             }
-
-            br.close();
-
+            scan.close();
         } catch (FileNotFoundException fnfe) {
-            System.err.println("FileNotFoundException occurs when reading a file: " + fnfe.getMessage());
+            throw new FileNotFoundException("FileNotFoundException: " + fnfe.getMessage());
+        } catch (IOException ioe) {
+            throw new IOException("IOException: " + ioe.getMessage());
         }
-
-        return fileContentsReadBuilder.toString();
     }
 
     /**
-     * The helper method for both writeFileContents(). Opens the file pointed to
-     * by the this.fileName, writes the given string to the file, and closes the file.
+     * Reads from an encrypted file, using FileClackData's fileName and key (for decryption), to determine FileClackData's fileContents
      *
-     * @param fileContentsToWrite a string representing the file contents to write
+     * @param key                   string of the key used to form the decryption, combination of letters.
+     * @throws IOException          Exception thrown if file is not found
      */
-    private void writeFileContentsHelper(String fileContentsToWrite) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(this.fileName));
-            bw.write(fileContentsToWrite);
-            bw.close();
+    public void readFileContents(String key) throws IOException
+    {
+        this.fileContents = "";
 
+        try {
+            Scanner scan = new Scanner(new File(this.fileName));
+            while (scan.hasNext()) {
+                String nextString = scan.next();
+                this.fileContents += nextString  + " ";
+            }
+            scan.close();
+
+            this.fileContents = encrypt(this.fileContents, key);
         } catch (FileNotFoundException fnfe) {
-            System.err.println("FileNotFoundException occurs when writing to a file: " + fnfe.getMessage());
+            throw new FileNotFoundException( "FileNotFoundException: " + fnfe.getMessage() );
+        } catch (IOException ioe) {
+            throw new IOException( "IOException: " + ioe.getMessage());
+        }
+    }
+
+    /**
+     * Writes a file, using FileClackData's fileName, with its content being fileContents
+     * @throws IOException          IOException
+     */
+    public void writeFileContents() throws IOException
+    {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(fileName);
+            writer.write(this.fileContents);
 
         } catch (IOException ioe) {
-            System.err.println("IOException occurs when writing to a file: " + ioe.getMessage());
+            throw new IOException("IOException: " + ioe.getMessage());
+        }
+
+        try {
+            writer.close();
+        } catch (IOException ioe) {
+            throw new IOException("IOException while closing file: " + ioe.getMessage());
         }
     }
+
+    /**
+     * Writes an encrypted file, using FileClackData's fileName and key (for encryption), with its content being an encrypted FileClackData's fileContents
+     *
+     * @param key           string of the key used to form the encryption, combination of letters.
+     * @throws IOException          IOException
+     */
+    public void writeFileContents(String key) throws IOException
+    {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(fileName);
+            writer.write(decrypt(this.fileContents, key));
+
+        } catch (IOException ioe) {
+            throw new IOException("IOException: " + ioe.getMessage());
+        }
+
+        try {
+            writer.close();
+        } catch (IOException ioe) {
+            throw new IOException("IOException while closing file: " + ioe.getMessage());
+        }
+    }
+
+    /**
+     * Creates a unique hashcode for a FIleClackData. Does not hashcode fileContents due to it being set to null
+     * since it is an incomplete variable.
+     *
+     * @return          an integer hashCode
+     */
+    @Override
+    public int hashCode()
+    {
+        int result = 17;
+        int prime = 37;
+
+        result = prime * result + getType();
+        result = prime * result + getDate().hashCode();
+        result = prime * result + getUserName().hashCode();
+        // result = prime * result + this.fileContents.hashCode();  |||| this is null; we cannot hashcode yet
+        result = prime * result + this.fileName.hashCode();
+
+        return result;
+    }
+
+    /**
+     * Checks if two FIleCLackData objects are equal to each other or not. Equal in this circumstance means equivalent
+     * type, userName, date, fileName, and fileContents. Does not use fileContents due to it being set to null
+     * since it is an incomplete variable.
+     *
+     * @param obj           dictates the second FileCLackData object that the first FileClackData is comparing to
+     * @return              a boolean that determines if the FileClackData's are equal or not
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) return false;
+        if (!(obj instanceof FileClackData)) return false;
+
+        FileClackData fcd = (FileClackData) obj;
+
+        return this.getType() == fcd.getType() &&
+                this.getUserName().equals(fcd.getUserName()) &&
+                this.getDate().equals(fcd.getDate()) &&
+                this.fileName.equals(fcd.fileName) &&
+                this.fileContents.equals(fcd.fileContents);
+
+    }
+
+    /**
+     * Turns all data inside FileClackData into a string output. The data includes: a type, userName, date, fileName,
+     * fileContents, and a hashCode.
+     *
+     * @return          string of all data inside FileClackData into a readable format
+     */
+    @Override
+    public String toString()
+    {
+        return "This is FileClackData that is type, " + getType() + ", from user, " + getUserName() +
+                ", at, " + getDate() + ", containing the file named, " + this.fileName + ", with the contents, " +
+                this.fileContents + ", the hash code is " + hashCode();
+    }
+
+    /**
+     * This is an accessor for FIleClackData's "Data".
+     *
+     * @return          a string of FileClackData's fileContents
+     */
+    public String getData()  { return this.fileContents; }
+
+    /**
+     * This is an overridden accessor for FIleClackData's "Data".
+     *
+     * @param key               string of the key used to form the decryption, combination of letters.
+     * @return                  a string of FileClackData's decrypted fileContents
+     */
+    public String getData(String key) { return decrypt(this.fileContents, key); }
 }
