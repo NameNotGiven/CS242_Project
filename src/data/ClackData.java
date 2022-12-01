@@ -25,7 +25,6 @@ public abstract class ClackData implements Serializable {
 
     private final Date date;
 
-
     public static final int CONSTANT_LISTUSERS = 0;
 
     public static final int CONSTANT_LOGOUT = 1;
